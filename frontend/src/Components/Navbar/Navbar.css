@@ -62,7 +62,9 @@
     font-weight: 500;
     background: white;
     cursor: pointer;
-
+    position: relative;
+    z-index: 999;
+    pointer-events: auto;
 }
 
 .nav-login-cart button:active{

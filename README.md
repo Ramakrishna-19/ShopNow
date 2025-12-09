@@ -4,7 +4,7 @@ ShopNow is a full-stack E-Commerce application built using React, Node.js, Expre
 Users can browse products, view product details, manage their cart, and securely checkout.
 Admins can add/remove products through a dedicated dashboard.
 
-🚀 FEATURES
+🚀 **FEATURES**
 
 ⭐ **User Frontend**
 
@@ -171,14 +171,14 @@ ShopNow/
 ### 📌 Product List (Admin)
 ![Screenshot 3](frontend/src/Components/Assets/Screenshot3.png)
 
-### 📌 Mobile View
+### 📌 Mobile and Tab (different sizes) View
+![Screenshot 12](frontend/src/Components/Assets/Screenshot12.png)![Screenshot 13](frontend/src/Components/Assets/Screenshot13.png)
 
-
-🙌 Contributing
+🙌 **Contributing**
 
 Pull requests are welcome!
 For major changes, please open an issue to discuss what you'd like to change.
 
-📜 License
+📜 **License**
 
 This project is licensed under the MIT License.

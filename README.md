@@ -162,14 +162,39 @@ Method	Endpoint	Protected	Description
 POST	/addtocart	Yes	Add item to cart
 POST	/removefromcart	Yes	Remove item from cart
 POST	/getcart	Yes	Load cart from DB
-🧪 Screenshots
 
-(Add images for homepage, product page, cart, admin panel)
+## 🖼 Screenshots
 
-![Home Page](./screenshots/home.png)
-![Product Display](./screenshots/product.png)
-![Cart](./screenshots/cart.png)
-![Admin Panel](./screenshots/admin.png)
+### 📌 Home Page
+![Screenshot 1](frontend/src/Components/Assets/Screenshot1.png)
+
+### 📌 Product Listing Page
+![Screenshot 2](frontend/src/Components/Assets/Screenshot2.png)
+
+### 📌 Product Details Page
+![Screenshot 3](frontend/src/Components/Assets/Screenshot3.png)
+
+### 📌 Cart Page
+![Screenshot 4](frontend/src/Components/Assets/Screenshot4.png)
+
+### 📌 Login Page
+![Screenshot 5](frontend/src/Components/Assets/Screenshot5.png)
+
+### 📌 Signup Page
+![Screenshot 6](frontend/src/Components/Assets/Screenshot6.png)
+
+### 📌 Admin Dashboard
+![Screenshot 7](frontend/src/Components/Assets/Screenshot7.png)
+
+### 📌 Add Product Page (Admin)
+![Screenshot 8](frontend/src/Components/Assets/Screenshot8.png)
+
+### 📌 Product List (Admin)
+![Screenshot 9](frontend/src/Components/Assets/Screenshot9.png)
+
+### 📌 Mobile View
+![Screenshot 10](frontend/src/Components/Assets/Screenshot10.png)
+
 
 🙌 Contributing
 

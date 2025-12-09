@@ -1,0 +1,41 @@
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 60px;
+    box-shadow: 0 1px 3px -2px #000;
+    margin-bottom: 1px;
+    background: white;
+    height: 60px;
+}
+.nav-logo{
+    height: 60px;
+    width: 180px;
+}
+.profile_icon{
+    height: 55px;
+    border-radius: 50%;
+}
+.nav_dropdown{
+    height: 50px;
+    margin-bottom: 2px;
+}
+
+@media(max-width:800px){
+    .navbar{
+        padding: 15px 30px;
+        height: 50px;
+    }
+    .nav-logo{
+        height: 50px;
+        width: auto;
+    }
+    .profile_icon{
+        height: 50px;
+    }
+    .nav_dropdown{
+        height: 40px;
+        margin-bottom: 4px;
+    }
+}
+

@@ -11,7 +11,9 @@ const { log } = require("console");
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb+srv://Ramakrishna:Ramakrishna%401918@cluster0.j1eq8gn.mongodb.net/ShopNow");
+mongoose.connect("mongodb+srv://Ramakrishna:ramakrishnadatabase@cluster0.wlvvuzi.mongodb.net/ShopNow")
+.then(() => console.log("MongoDB Connected"))
+.catch((err) => console.log(err));
 
 app.get("/", (req, res)=>{
     res.send("Express App is Running")
@@ -70,33 +72,41 @@ const Product = mongoose.model("Product", {
     },
 })
 
-app.post('/addproduct', async (req, res)=>{
-    let products = await Product.find({});
-    let id;
-    if(products.length > 0){
-        let last_product_array = products.slice(-1);
-        let last_product = last_product_array[0];
-        id = last_product.id + 1;
+app.post('/addproduct', async (req, res) => {
+    try {
+        console.log("REQ BODY:", req.body);
+
+        let products = await Product.find({});
+        let id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+
+        const product = new Product({
+            id: id,
+            name: req.body.name,
+            image: req.body.image,
+            category: req.body.category,
+            new_price: Number(req.body.new_price),
+            old_price: Number(req.body.old_price),
+        });
+
+        console.log("ABOUT TO SAVE:", product);
+
+        await product.save();
+        console.log("Saved");
+
+        res.json({
+            success: true,
+            name: req.body.name,
+        });
+
+    } catch (error) {
+        console.error("ADD PRODUCT ERROR:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        });
     }
-    else{
-        id = 1;
-    }
-    const product = new Product({
-        id: id,
-        name:req.body.name,
-        image:req.body.image,
-        category: req.body.category,
-        new_price: req.body.new_price,
-        old_price: req.body.old_price,
-    });
-    console.log(product);
-    await product.save();
-    console.log("Saved");
-    res.json({
-        success:true,
-        name: req.body.name,
-    })
-})
+});
+
 
 app.post('/removeproduct', async(req, res)=>{
     await Product.findOneAndDelete({id: req.body.id});
@@ -105,6 +115,135 @@ app.post('/removeproduct', async(req, res)=>{
         success: true,
         name: req.body.name,
     })
+})
+
+app.get('/allproducts', async (req, res)=>{
+    let products = await Product.find({});
+    console.log("All Products Fetched");
+    res.send(products);
+})
+
+const Users = mongoose.model('Users', {
+    name:{
+        type: String,
+    },
+    email:{
+        type: String,
+        uniqe: true,
+    },
+    password:{
+        type: String,
+    },
+    cartData:{
+        type: Object,
+    },
+    date:{
+        type: Date,
+        default:Date.now,
+    }
+})
+
+app.post('/signup', async (req, res)=>{
+    let check = await Users.findOne({email:req.body.email});
+    if(check){
+        return res.status(400).json({success:false, error:"existing user found with same email address"});
+    }
+    let cart = {};
+    for(let i = 0; i < 300; i++){
+        cart[i] = 0;
+    }
+    const user = new Users({
+        name: req.body.username, 
+        email: req.body.email,
+        password: req.body.password,
+        cartData: cart,
+    })
+
+    await user.save();
+
+    const data = {
+        user:{
+            id: user.id
+        }
+    }
+
+    const token = jwt.sign(data, 'secret_ecom');
+    res.json({success: true, token})
+})
+
+app.post('/login', async (req, res)=>{
+    let user = await Users.findOne({email:req.body.email});
+    if(user){
+        const passCompare = req.body.password === user.password;
+        if(passCompare){
+            const data = {
+                user:{
+                    id:user.id
+                }
+            }
+            const token = jwt.sign(data, 'secret_ecom')
+            res.json({success: true, token});
+        }
+        else{
+            res.json({success:false, errors: "Wrong Password"});
+        }
+    }
+    else{
+        res.json({success: false, errors: "Wrong Email Id"});
+    }
+})
+
+app.get('/newcollections',async(req, res)=>{
+    let products = await Product.find({});
+    let newcollection = products.slice(-8);
+    console.log("New Collection Fetched");
+    res.send(newcollection);
+})
+
+app.get('/popularinwomen', async(req, res)=>{
+    let products = await Product.find({category:"women"});
+    let popular_in_women = products.slice(0, 4);
+    console.log("Popular in women fetched");
+    res.send(popular_in_women);
+})
+
+const fetchUser = async (req, res, next)=>{
+    const token = req.header('auth-token');
+    if(!token){
+        res.status(401).send({errors:"Please authenticate using valid token"});
+    }
+    else{
+        try{
+            const data = jwt.verify(token, 'secret_ecom');
+            req.user = data.user;
+            next();
+        } catch(error){
+            res.status(401).send({errors:"Please Authenticate using a valid token"});
+        }
+    }
+}
+
+app.post('/addtocart',fetchUser, async (req, res)=>{
+    console.log("Added ", req.body.itemId);
+    let userData = await Users.findOne({_id:req.user.id});
+    userData.cartData[req.body.itemId] += 1;
+    await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+    res.send("Added")
+})
+
+app.post('/removefromcart', fetchUser, async(req, res)=>{
+    console.log("Removed ", req.body.itemId);
+    let userData = await Users.findOne({_id:req.user.id});
+    if(userData.cartData[req.body.itemId]> 0)
+        userData.cartData[req.body.itemId] -= 1;
+    await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+    res.send("Removed")
+})
+
+app.post('/getcart', fetchUser, async(req, res)=>{
+    console.log("Get Cart");
+    let userData = await Users.findOne({_id:req.user.id});
+    res.json(userData.cartData);
 })
 
 app.listen(port, (error)=>{

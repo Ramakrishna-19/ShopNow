@@ -114,6 +114,23 @@ app.get("/allproducts", async (req, res) => {
   res.send(products);
 });
 
+// GET Popular in women 
+app.get('/popularinwomen', async(req, res)=>{
+    let products = await Product.find({category:"women"});
+    let popular_in_women = products.slice(0, 4);
+    console.log("Popular in women fetched");
+    res.send(popular_in_women);
+});
+
+// GET NEW Collections 
+app.get('/newcollections', async(req, res)=>{
+    let products = await Product.find({});
+    let newcollection = products.slice(-8);
+    console.log("New Collection Fetched");
+    res.send(newcollection);
+});
+
+
 // USER MODEL
 const Users = mongoose.model("Users", {
   name: String,
